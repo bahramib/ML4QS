@@ -3,6 +3,8 @@ import numpy as np
 
 # Hyperparameters (for us)
 interval_length = 0.01
+first_seconds_to_drop = 0 # it will automatically drop some from the start and the end
+last_seconds_to_drop = 0 # from the mismatch in the length of data
 
 def replace_nan_with_next_numpy(df):
     # Identify numeric columns only
@@ -88,13 +90,16 @@ data_loc = replace_nan_with_next_numpy(data_loc)
 data_loc['Interval'] = data_loc['Interval'].apply(lambda x: x.left + interval_length)
 data_loc = data_loc.drop('Loc_Time', axis=1)
 
-# print(data_loc)
 
 
 # Making sure every interval column has the same length so we can use merge instead of concat
 dfs = [data_lin_acc, data_acc, data_gyro, data_loc]
-longest_idx = np.argmax([len(data_lin_acc), len(data_acc), len(data_gyro), len(data_loc)])
-first_valids = []
+lengths = [len(data_lin_acc), len(data_acc), len(data_gyro), len(data_loc)]
+longest_idx = np.argmax(lengths)
+first_valids = [data_lin_acc["LA_X"].first_valid_index(), data_acc["A_X"].first_valid_index(), data_gyro['G_X'].first_valid_index(), data_loc['Height'].first_valid_index()]
+last_full = min(lengths)
+first_full = max(first_valids)
+
 print(f"Longest index: {longest_idx}; longest df: {['Linear Accelerometer', 'Accelerometer', 'Gyroscope'][longest_idx]}; Length: {len(dfs[longest_idx])}")
 
 if len(data_lin_acc) < len(dfs[longest_idx]):
@@ -116,9 +121,7 @@ if len(data_loc) < len(dfs[longest_idx]):
 
 # print(data_loc)
 
-# data_gyro.drop("Interval")
 
-# print("Same length" if len(data1) == len(data2) else "Yuck")
 # Put the data together
 # data = pd.concat([data_lin_acc, data_acc], axis=1, join="outer")
 data = pd.merge(data_lin_acc, data_acc, on='Interval', how='outer')
@@ -126,9 +129,16 @@ data = pd.merge(data, data_gyro, on='Interval', how='outer')
 data = pd.merge(data, data_loc, on='Interval', how='outer')
 
 
-# missing_any = data.isna().any().any()
-# print(missing_any)
+first_to_drop = max(np.ceil(first_seconds_to_drop/interval_length), first_full)
+last_to_drop = max(np.ceil(last_seconds_to_drop/interval_length), len(data) - last_full)
 
-# Show the resulting DataFrame
+data = data.iloc[first_to_drop : -last_to_drop] if last_to_drop != 0 else data.iloc[first_to_drop:]
+
+missing_any = data.isna().any().any()
+print(missing_any)
+
+
+
+# Show the final dataframe
 print(data)
 data.to_csv('bike/compressed.csv', index=False)
