@@ -1,10 +1,11 @@
 import pandas as pd
 import numpy as np
+import matplotlib as plt
 
 # Hyperparameters (for us)
-interval_length = 0.01
-first_seconds_to_drop = 0 # it will automatically drop some from the start and the end
-last_seconds_to_drop = 0 # from the mismatch in the length of data
+interval_length = 0.01 # 0.01 is unaggregated because thats the measurement frequency
+first_seconds_to_drop = 10 # it will automatically drop some from the start and the end
+last_seconds_to_drop = 20 # from the mismatch in the length of data
 
 def replace_nan_with_next_numpy(df):
     # Identify numeric columns only
@@ -129,10 +130,10 @@ data = pd.merge(data, data_gyro, on='Interval', how='outer')
 data = pd.merge(data, data_loc, on='Interval', how='outer')
 
 
-first_to_drop = max(np.ceil(first_seconds_to_drop/interval_length), first_full)
-last_to_drop = max(np.ceil(last_seconds_to_drop/interval_length), len(data) - last_full)
+first_to_drop = max(np.ceil(first_seconds_to_drop/interval_length).astype("int64"), first_full)
+last_to_drop = max(np.ceil(last_seconds_to_drop/interval_length).astype("int64"), len(data) - last_full)
 
-data = data.iloc[first_to_drop : -last_to_drop] if last_to_drop != 0 else data.iloc[first_to_drop:]
+data = (data.iloc[first_to_drop : -last_to_drop]) if last_to_drop != 0 else (data.iloc[first_to_drop:])
 
 missing_any = data.isna().any().any()
 print(missing_any)
