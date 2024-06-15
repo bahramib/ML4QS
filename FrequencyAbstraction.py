@@ -45,14 +45,14 @@ class FourierTransformation:
         else:
             pse = 0
 
-        # real_ampl = np.insert(real_ampl, 0, max_freq)
-        # real_ampl = np.insert(real_ampl, 0, freq_weigthed)
-        # row = np.insert(real_ampl, 0, pse)
+        real_ampl = np.insert(real_ampl, 0, max_freq)
+        real_ampl = np.insert(real_ampl, 0, freq_weigthed)
+        row = np.insert(real_ampl, 0, pse)
 
-        new_data = []
-        new_data = np.insert(new_data, 0, max_freq)
-        new_data = np.insert(new_data, 0, freq_weigthed)
-        row = np.insert(new_data, 0, pse)
+        # new_data = []
+        # new_data = np.insert(new_data, 0, max_freq)
+        # new_data = np.insert(new_data, 0, freq_weigthed)
+        # row = np.insert(new_data, 0, pse)
 
         self.temp_list.append(row)
 
@@ -63,15 +63,14 @@ class FourierTransformation:
         self.freqs = (sampling_rate * np.fft.rfftfreq(int(window_size))).round(3)
 
         for col in columns:
-            print(col)
             collist = []
             # prepare column names
             collist.append(col + '_max_freq')
             collist.append(col + '_freq_weighted')
             collist.append(col + '_pse')
             
-            # collist = collist + [col + '_freq_' +
-            #         str(freq) + '_Hz_ws_' + str(window_size) for freq in self.freqs]
+            collist = collist + [col + '_freq_' +
+                    str(freq) + '_Hz_ws_' + str(window_size) for freq in self.freqs]
            
             # rolling statistics to calculate frequencies, per window size. 
             # Pandas Rolling method can only return one aggregation value. 

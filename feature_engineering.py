@@ -6,14 +6,15 @@ import os
 import pandas as pd
 import matplotlib.pyplot as plt
 
-directory = "bike"
+directory = "bike1"
+file_name = "cleaned_compressed_outlier_removal.csv"
 
 # Create instances of the classes
 fourier = FourierTransformation()
 numerical = NumericalAbstraction()
 
 # Full path to the file
-file_path = os.path.join(directory, "compressed.csv")
+file_path = os.path.join(directory, file_name)
 
 # Check if the file exists
 if os.path.exists(file_path):
@@ -21,7 +22,7 @@ if os.path.exists(file_path):
     data = pd.read_csv(file_path)
     # aggregated_data = pd.read_csv("aggregated_data.csv")
     # Apply numerical abstraction
-    aggregated_data = numerical.abstract_numerical(data,["LA_X","LA_Y","LA_Z","A_X","A_Y","A_Z","G_X","G_Y","G_Z","Lat","Long","Height","V","Dir","Hor_Acc","Vert_Acc"], 1000, "mean")
+    aggregated_data = numerical.abstract_numerical(data,["LA_X","LA_Y","LA_Z","A_X","A_Y","A_Z","G_X","G_Y","G_Z","Lat","Long","Height","V","Dir","Hor_Acc","Vert_Acc"], 120, "mean")
     
     # print aggregated data to file
     # aggregated_data.to_csv("aggregated_data.csv",index=False)
@@ -36,7 +37,7 @@ if os.path.exists(file_path):
     plt.ylabel('Acceleration')
     plt.legend()
     plt.show()
-    frequency_data = fourier.abstract_frequency(aggregated_data, ["LA_X","LA_Y","LA_Z","A_X","A_Y","A_Z","G_X","G_Y","G_Z"], 1000, 100)
+    frequency_data = fourier.abstract_frequency(aggregated_data, ["LA_X","LA_Y","LA_Z","A_X","A_Y","A_Z","G_X","G_Y","G_Z"], 40, 4)
 
     frequency_data.to_csv("conv_and_frequeency_bike_data.csv",index=False)
     # frequency_data = pd.read_csv("frequeency_data.csv")
