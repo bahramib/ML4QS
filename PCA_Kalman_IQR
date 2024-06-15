@@ -7,8 +7,8 @@ from pykalman import KalmanFilter
 import matplotlib.pyplot as plt
 import os
 
-directory = 'bike1'
-file_name = 'compressed_0.25_10_10.csv'
+directory = 'running3'
+file_name = 'compressed_0.25_10_5.csv'
 file_path = os.path.join(directory, file_name)
 data = pd.read_csv(file_path)
 

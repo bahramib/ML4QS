@@ -6,7 +6,7 @@ import os
 import pandas as pd
 import matplotlib.pyplot as plt
 
-directory = "bike1"
+directory = "running3"
 file_name = "cleaned_compressed_outlier_removal.csv"
 
 # Create instances of the classes
@@ -39,7 +39,7 @@ if os.path.exists(file_path):
     plt.show()
     frequency_data = fourier.abstract_frequency(aggregated_data, ["LA_X","LA_Y","LA_Z","A_X","A_Y","A_Z","G_X","G_Y","G_Z"], 40, 4)
 
-    frequency_data.to_csv("conv_and_frequeency_bike_data.csv",index=False)
+    frequency_data.to_csv(f"conv_and_frequeency_{directory}_data.csv",index=False)
     # frequency_data = pd.read_csv("frequeency_data.csv")
     
     plt.figure(figsize=(10, 6))

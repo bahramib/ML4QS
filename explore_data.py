@@ -2,7 +2,7 @@ import os
 import pandas as pd
 import matplotlib.pyplot as plt
 
-directory = "bike1"
+directory = "experiment4"
 file_pah = os.path.join(directory, "Accelerometer.csv")
 
 if os.path.exists(file_pah):
