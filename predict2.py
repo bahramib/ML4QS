@@ -1,0 +1,71 @@
+import numpy as np
+import pandas as pd
+from sklearn.model_selection import train_test_split
+from sklearn.preprocessing import StandardScaler
+from sklearn.svm import SVC
+from sklearn.metrics import classification_report, accuracy_score
+from imblearn.over_sampling import RandomOverSampler
+from imblearn.under_sampling import RandomUnderSampler
+from imblearn.pipeline import Pipeline
+from sklearn.metrics import confusion_matrix
+import seaborn as sns
+import matplotlib.pyplot as plt
+
+
+shuffle = False
+
+# Load the dataset
+data = pd.read_csv('final_data.csv' if shuffle == False else 'final_data_shuffled.csv')
+
+# Assume 'sport_type' is the column for the sport types
+X = data.drop('sport_type', axis=1)  # Features
+for col in ["Long", "Lat", "Lat_temp_mean_ws_120", "Long_temp_mean_ws_120"]:
+    X = X.drop(col, axis=1)  # Features
+y = data['sport_type']               # Target
+
+# Handle missing values if necessary
+X.fillna(X.mean(), inplace=True)
+
+# Scale the features
+
+average_size = int((y.value_counts().sum()) / 2)
+# over_strategy = {'not_bike': average_size}
+over_strategy = {'run': average_size, 'walk': average_size}
+under_strategy = {'bike': average_size}
+over = RandomOverSampler(sampling_strategy=over_strategy)
+under = RandomUnderSampler(sampling_strategy=under_strategy)
+pipeline = Pipeline(steps=[('o', over), ('u', under)])
+
+
+scaler = StandardScaler()
+X_scaled = scaler.fit_transform(X)
+
+
+X_resampled, y_resampled = pipeline.fit_resample(X, y)
+print(pd.Series(y_resampled).value_counts())
+
+X_train, X_test, y_train, y_test = train_test_split(X_resampled, y_resampled, test_size=0.3, random_state=69)
+# X_train, X_test, y_train, y_test = train_test_split(X_scaled, y, test_size=0.3, random_state=69)
+
+
+# Initialize the SVM classifier
+svm = SVC(kernel='rbf', C=1.0, random_state=42)  # RBF kernel, you can experiment with 'linear', 'poly', etc.
+
+# Fit the SVM model
+svm.fit(X_train, y_train)
+
+# Make predictions
+y_pred = svm.predict(X_test)
+
+# Print the evaluation results
+print("\nAccuracy:", accuracy_score(y_test, y_pred))
+print("\nClassification Report:\n", classification_report(y_test, y_pred))
+
+
+# cm = confusion_matrix(y_test, y_pred, labels=["bike", "run", "walk"])
+# sns.heatmap(cm, annot=True, fmt='d', cmap='Blues', xticklabels=["bike", "run", "walk"], yticklabels=["bike", "run", "walk"])
+cm = confusion_matrix(y_test, y_pred, labels=["bike", "not_bike"])
+sns.heatmap(cm, annot=True, fmt='d', cmap='Blues', xticklabels=["bike", "not_bike"], yticklabels=["bike", "not_bike"])
+plt.xlabel('Predicted')
+plt.ylabel('True')
+plt.show()

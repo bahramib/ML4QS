@@ -6,7 +6,7 @@ import sys
 if len(sys.argv) < 3:
     print("Give at least 2 arguments")
     print("Run in the following way: python3 process.py <exercise type> <exercise number> <interval length> <trim front> <trim back>")
-    print("exercise type - {bike, walk, run, tennis}")
+    print("exercise type - {bike, walk, running, tennis}")
     print("exercise number - positive integer")
     print("interval length (optional) - non negative float: the interval that we segment the data by (default: 0.01")
     print("trim front (optional) - non-negative integer: amount of seconds guaranteed to be trimmed from the start of the data (default: 0)")
