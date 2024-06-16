@@ -10,6 +10,7 @@ from imblearn.pipeline import Pipeline
 from sklearn.metrics import confusion_matrix
 import seaborn as sns
 import matplotlib.pyplot as plt
+from sklearn.model_selection import cross_val_score
 
 
 shuffle = False
@@ -19,8 +20,8 @@ data = pd.read_csv('final_data.csv' if shuffle == False else 'final_data_shuffle
 
 # Assume 'sport_type' is the column for the sport types
 X = data.drop('sport_type', axis=1)  # Features
-for col in ["Long", "Lat", "Lat_temp_mean_ws_120", "Long_temp_mean_ws_120"]:
-    X = X.drop(col, axis=1)  # Features
+# for col in ["Long", "Lat", "Lat_temp_mean_ws_120", "Long_temp_mean_ws_120"]:
+#     X = X.drop(col, axis=1)  # Features
 y = data['sport_type']               # Target
 
 # Handle missing values if necessary
@@ -50,7 +51,9 @@ X_train, X_test, y_train, y_test = train_test_split(X_resampled, y_resampled, te
 
 # Initialize the SVM classifier
 svm = SVC(kernel='rbf', C=1.0, random_state=42)  # RBF kernel, you can experiment with 'linear', 'poly', etc.
-
+scores = cross_val_score(svm, X_scaled, y, cv=10)  # 10-fold cross-validation
+print("Cross-validated accuracy scores:", scores)
+print("Average cross-validation score:", scores.mean())
 # Fit the SVM model
 svm.fit(X_train, y_train)
 
@@ -62,10 +65,10 @@ print("\nAccuracy:", accuracy_score(y_test, y_pred))
 print("\nClassification Report:\n", classification_report(y_test, y_pred))
 
 
-# cm = confusion_matrix(y_test, y_pred, labels=["bike", "run", "walk"])
-# sns.heatmap(cm, annot=True, fmt='d', cmap='Blues', xticklabels=["bike", "run", "walk"], yticklabels=["bike", "run", "walk"])
-cm = confusion_matrix(y_test, y_pred, labels=["bike", "not_bike"])
-sns.heatmap(cm, annot=True, fmt='d', cmap='Blues', xticklabels=["bike", "not_bike"], yticklabels=["bike", "not_bike"])
+cm = confusion_matrix(y_test, y_pred, labels=["bike", "run", "walk"])
+sns.heatmap(cm, annot=True, fmt='d', cmap='Blues', xticklabels=["bike", "run", "walk"], yticklabels=["bike", "run", "walk"])
+# cm = confusion_matrix(y_test, y_pred, labels=["bike", "not_bike"])
+# sns.heatmap(cm, annot=True, fmt='d', cmap='Blues', xticklabels=["bike", "not_bike"], yticklabels=["bike", "not_bike"])
 plt.xlabel('Predicted')
 plt.ylabel('True')
 plt.show()
