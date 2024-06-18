@@ -13,7 +13,7 @@ from sklearn.metrics import confusion_matrix
 import seaborn as sns
 import matplotlib.pyplot as plt
 
-shuffle = False
+shuffle = True
 
 
 # Load the dataset
@@ -28,27 +28,27 @@ X.fillna(X.mean(), inplace=True)
 # Check class distribution
 print("Class distribution:\n", y.value_counts())
 
-average_size = int((y.value_counts().sum()) / 3)
-over_strategy = {'run': average_size, 'walk': average_size}
+# average_size = int((y.value_counts().sum()) / 4)
+average_size = 3846
+over_strategy = {'run': average_size, 'walk': average_size, 'dance': average_size}
 under_strategy = {'bike': average_size}
 over = RandomOverSampler(sampling_strategy=over_strategy)
 under = RandomUnderSampler(sampling_strategy=under_strategy)
 pipeline = Pipeline(steps=[('o', over), ('u', under)])
 
 
-scaler = StandardScaler()
-X_scaled = scaler.fit_transform(X)
+# scaler = StandardScaler()
+# X_scaled = scaler.fit_transform(X)
 
 
-X_resampled, y_resampled = pipeline.fit_resample(X_scaled, y)
+X_resampled, y_resampled = pipeline.fit_resample(X, y)
 print(pd.Series(y_resampled).value_counts())
 
 X_train, X_test, y_train, y_test = train_test_split(X_resampled, y_resampled, test_size=0.2, random_state=69)
 
 
-# Initialize KNN with k neighbors, let's say 5
-knn = KNeighborsClassifier(n_neighbors=5)
-scores = cross_val_score(knn, X_scaled, y, cv=10)  # 10-fold cross-validation
+knn = KNeighborsClassifier(n_neighbors=7)
+scores = cross_val_score(knn, X, y, cv=10)  # 10-fold cross-validation
 print("Cross-validated accuracy scores:", scores)
 print("Average cross-validation score:", scores.mean())
 
@@ -62,8 +62,8 @@ y_pred = knn.predict(X_test)
 print("Accuracy:", accuracy_score(y_test, y_pred))
 print("\nClassification Report:\n", classification_report(y_test, y_pred))
 
-cm = confusion_matrix(y_test, y_pred, labels=["bike", "run", "walk"])
-sns.heatmap(cm, annot=True, fmt='d', cmap='Blues', xticklabels=["bike", "run", "walk"], yticklabels=["bike", "run", "walk"])
+cm = confusion_matrix(y_test, y_pred, labels=["bike", "run", "walk", "dance"])
+sns.heatmap(cm, annot=True, fmt='d', cmap='Blues', xticklabels=["bike", "run", "walk", "dance"], yticklabels=["bike", "run", "walk", "dance"])
 plt.xlabel('Predicted')
 plt.ylabel('True')
 plt.show()
