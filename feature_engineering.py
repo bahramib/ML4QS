@@ -6,7 +6,7 @@ import os
 import pandas as pd
 import matplotlib.pyplot as plt
 
-directory = "dancing2"
+directory = "walk_matei3"
 file_name = "cleaned_compressed_outlier_removal.csv"
 
 # Create instances of the classes
@@ -22,7 +22,7 @@ if os.path.exists(file_path):
     data = pd.read_csv(file_path)
     # aggregated_data = pd.read_csv("aggregated_data.csv")
     # Apply numerical abstraction
-    aggregated_data = numerical.abstract_numerical(data,["LA_X","LA_Y","LA_Z","A_X","A_Y","A_Z","G_X","G_Y","G_Z","Lat","Long","Height","V","Dir","Hor_Acc","Vert_Acc"], 120, "mean")
+    aggregated_data = numerical.abstract_numerical(data,["LA_X","LA_Y","LA_Z","A_X","A_Y","A_Z","G_X","G_Y","G_Z","V","Dir","Hor_Acc","Vert_Acc"], 120, "mean")
     
     # print aggregated data to file
     # aggregated_data.to_csv("aggregated_data.csv",index=False)
