@@ -7,7 +7,7 @@ from pykalman import KalmanFilter
 import matplotlib.pyplot as plt
 import os
 
-directory = 'walk_stan3'
+directory = 'walk_beni3'
 file_name = 'compressed_0.25_60_60.csv'
 file_path = os.path.join(directory, file_name)
 data = pd.read_csv(file_path)

@@ -6,7 +6,7 @@ import os
 import pandas as pd
 import matplotlib.pyplot as plt
 
-directory = "walk_stan3"
+directory = "walk_beni3"
 file_name = "cleaned_compressed_outlier_removal.csv"
 
 # Create instances of the classes
