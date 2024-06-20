@@ -66,10 +66,10 @@ def fill_loc(df_longer, df_shorter, prefix):
 
 
 # Load the files with the correct names
-data_lin_acc = pd.read_csv(f'{filename}{filenumber}/Linear Accelerometer.csv')
-data_acc = pd.read_csv(f'{filename}{filenumber}/Accelerometer.csv')
-data_gyro = pd.read_csv(f'{filename}{filenumber}/Gyroscope.csv')
-data_loc = pd.read_csv(f'{filename}{filenumber}/Location.csv')
+data_lin_acc = pd.read_csv(f'walk_{filename}{filenumber}/Linear Accelerometer.csv')
+data_acc = pd.read_csv(f'walk_{filename}{filenumber}/Accelerometer.csv')
+data_gyro = pd.read_csv(f'walk_{filename}{filenumber}/Gyroscope.csv')
+data_loc = pd.read_csv(f'walk_{filename}{filenumber}/Location.csv')
 data_lin_acc.columns = ["LA_Time", "LA_X", "LA_Y", "LA_Z"]
 data_acc.columns = ["A_Time", "A_X", "A_Y", "A_Z"]
 data_gyro.columns = ["G_Time", "G_X", "G_Y", "G_Z"]

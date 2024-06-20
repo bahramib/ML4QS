@@ -3,8 +3,8 @@ import pandas as pd
 import matplotlib.pyplot as plt
 
 
-data1 = pd.read_csv("walk_matei3/Accelerometer.csv")
-data2 = pd.read_csv("walk_matei3/Accelerometer.csv")
+data1 = pd.read_csv("walk_stan3/Accelerometer.csv")
+# data2 = pd.read_csv("walk_matei3/Accelerometer.csv")
 #plot time against acceleration x then y then z
 plt.figure(figsize=(10, 6))
 plt.plot(data1["Time (s)"], data1["X (m/s^2)"], label="X1")
