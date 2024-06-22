@@ -13,57 +13,59 @@ from sklearn.metrics import confusion_matrix
 import seaborn as sns
 import matplotlib.pyplot as plt
 
-shuffle = True
+shuffle = False
 
 
-# Load the dataset
 data = pd.read_csv('final_data.csv' if shuffle == False else 'final_data_shuffled.csv')
 
-# Example: Assume 'sport_type' is the column for the sport types
-X = data.drop('sport_type', axis=1)  # Features
-y = data['sport_type']               # Target
-# Handle missing values if necessary
+X = data.drop('person', axis=1)
+X = X.drop('Long', axis=1)
+X = X.drop('Lat', axis=1)
+X = X.drop('Height', axis=1)
+X = X.drop('Interval', axis=1)
+
+y = data['person']
+
+
 X.fillna(X.mean(), inplace=True)
 
 # Check class distribution
 print("Class distribution:\n", y.value_counts())
 
 # average_size = int((y.value_counts().sum()) / 4)
-average_size = 3846
-over_strategy = {'run': average_size, 'walk': average_size, 'dance': average_size}
-under_strategy = {'bike': average_size}
-over = RandomOverSampler(sampling_strategy=over_strategy)
-under = RandomUnderSampler(sampling_strategy=under_strategy)
-pipeline = Pipeline(steps=[('o', over), ('u', under)])
+# average_size = int((y.value_counts().sum()) / 2)
+# over_strategy = {'matei': average_size, 'stan': average_size}
+# under_strategy = {'matei': average_size, 'stan': average_size}
+# over = RandomOverSampler(sampling_strategy=over_strategy)
+# under = RandomUnderSampler(sampling_strategy=under_strategy)
+# pipeline = Pipeline(steps=[('o', over), ('u', under)])
 
 
-# scaler = StandardScaler()
-# X_scaled = scaler.fit_transform(X)
+scaler = StandardScaler()
+X_scaled = scaler.fit_transform(X)
 
 
-X_resampled, y_resampled = pipeline.fit_resample(X, y)
-print(pd.Series(y_resampled).value_counts())
+# X_resampled, y_resampled = pipeline.fit_resample(X, y)
+# print(pd.Series(y_resampled).value_counts())
 
-X_train, X_test, y_train, y_test = train_test_split(X_resampled, y_resampled, test_size=0.2, random_state=69)
+X_train, X_test, y_train, y_test = train_test_split(X_scaled, y, test_size=0.2, random_state=69)
 
 
-knn = KNeighborsClassifier(n_neighbors=7)
+knn = KNeighborsClassifier(n_neighbors=5)
 scores = cross_val_score(knn, X, y, cv=10)  # 10-fold cross-validation
 print("Cross-validated accuracy scores:", scores)
 print("Average cross-validation score:", scores.mean())
 
-# Fit the model
-knn.fit(X_train, y_train)
 
-# Make predictions
+knn.fit(X_train, y_train)
 y_pred = knn.predict(X_test)
 
-# Print the evaluation results
+
 print("Accuracy:", accuracy_score(y_test, y_pred))
 print("\nClassification Report:\n", classification_report(y_test, y_pred))
 
-cm = confusion_matrix(y_test, y_pred, labels=["bike", "run", "walk", "dance"])
-sns.heatmap(cm, annot=True, fmt='d', cmap='Blues', xticklabels=["bike", "run", "walk", "dance"], yticklabels=["bike", "run", "walk", "dance"])
+cm = confusion_matrix(y_test, y_pred, labels=["matei", "stan", "beni"])
+sns.heatmap(cm, annot=True, fmt='d', cmap='Blues', xticklabels=["matei", "stan", "beni"], yticklabels=["matei", "stan", "beni"])
 plt.xlabel('Predicted')
 plt.ylabel('True')
 plt.show()
