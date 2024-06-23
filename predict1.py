@@ -13,7 +13,7 @@ from sklearn.metrics import confusion_matrix
 import seaborn as sns
 import matplotlib.pyplot as plt
 
-shuffle = False
+shuffle = True
 
 
 data = pd.read_csv('final_data.csv' if shuffle == False else 'final_data_shuffled.csv')
